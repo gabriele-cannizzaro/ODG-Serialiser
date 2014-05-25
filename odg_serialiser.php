@@ -1,8 +1,14 @@
 <?php 
 
-###     ODG Serialiser
-###
-###     by Gabriele Cannizzaro
+# ========================   ODG Serialiser   =========================
+# =====================================================================
+# Purpose:          Serialise pages and replace strings in ODG document
+#                   ---------------------------
+# Author:           Gabriele Cannizzaro
+# Revsion:          v1.0
+#
+# 3rd party:        PureCSS [http://purecss.io/]
+# ======================================================================
 
 zip_lib_check();
 
