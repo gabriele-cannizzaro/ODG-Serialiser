@@ -1,7 +1,5 @@
 <?php 
 
-ini_set('display_errors', 0);
-error_reporting(-1);
 zip_lib_check();
 
 if ($_POST['submit']) {
@@ -148,109 +146,173 @@ function rrmdir( $dir ) {
 <head>
 	<title>ODG Manipulator</title>
 	<style>
-		#successful {
-			background-color: green;
-			color: white;
+		body {
+			font-family: "PT Sans";
+		}
+		table, input {
+			width: 100%;
+		}
+
+		#container {
+			width: 500px;
+			margin: 0px auto 0px auto;
+		}
+
+		header {
+			margin-top: 25px;
+		}
+		header h1 {
+			margin: 0px;
+			padding: 0px;
+			font-size: 2em;
+			text-align: center;
 			text-transform: uppercase;
 		}
-		.replaceVar {
-		 	cursor: pointer;
-		 	border: 1px solid red;
-		 }
+
+		form p {
+			margin: 0px;
+		}
+
+		#odgfile {
+			margin-top: 25px;
+		}
+
+		#sequence {
+			margin-top: 25px;
+		}
+		#sequence-th-source {
+			width: 350px;
+		}
+		#sequence-th-start {
+			width: 100px;
+		}
+		#sequence-th-end {
+			width: 50px;
+		}
+
+		#replace_strings {
+			margin-top: 25px;
+		}
+		#replace-th-replace {
+			width: 243px;
+		}
+		#replace-th-with {
+			width: 242px;
+		}
+		#replace-th-remove {
+			width: 15px;
+			cursor: pointer;
+		}
+		#replace-th-remove:before {
+			content: "\271A";
+		}
 		.removeVar {
 			cursor: pointer;
-			background-color: black;
-			color: red;
-			font-family: "Arial";
+			margin-right: 3px;
 		}
-		.addVar {
-			border: 2px solid red;
-			cursor: pointer;
+		.removeVar:before {
+			content: "\2718";
+		}
+
+		#submit {
+			margin: 35px auto 0px auto;
+			display: block;
 		}
 	</style>
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.4.2/pure-min.css">
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 </head>
 
 <body>
 
+<div id="container">
+
 	<header>
-		<h1>ODG Manipulator</h1>
+		<h1>ODG Serialiser</h1>
 	</header>
 
-	<div style="">operation completed successfully</div>
-
 	<form id="odg_manipulator" name="odg_manipulator" action="<?php echo $_SERVER['PHP_SELF']; ?>" method="POST" enctype="multipart/form-data">
-		<p>
-			<input type="submit" name="submit">
-			<input type="file" name="odgfile" id="odgfile" accept="application/vnd.oasis.opendocument.graphics" autofocus>
-		</p>
-		<p>
-			<span>Number sequence</span>
-			<br>
-			<label for="sequence_source">Replace</label>
-			<input type="text" name="sequence[source]" id="sequence_source'" value="<?php echo $_POST['sequence']['source']; ?>" required>
-			<label for="sequence_start">starting</label>
-			<input type="number" name="sequence[start]" id="sequence_start" value="<?php echo $_POST['sequence']['start']; ?>" required>
-			<label for="sequence_end">until</label>
-			<input type="number" name="sequence[end]" id="sequence_end" value="<?php echo $_POST['sequence']['end']; ?>" required>
-		</p>
 
-<?php
+		<table class="pure-table pure-table-horizontal" id="odgfile">
+		    <thead>
+		        <tr>
+		            <th id="sequence-th-source">Select an ODG file to serialise</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+				<tr>
+					<td>
+						<input type="file" name="odgfile" accept="application/vnd.oasis.opendocument.graphics" required>
+					</td>					
+				</tr>
+		    </tbody>
+		</table>
 
-if ($_POST['replace']) {
-	$i = 0;
-	foreach ($_POST['replace'] as $replace) {
-		if ($replace['source'] !== '') {
+		<table class="pure-table pure-table-horizontal" id="sequence">
+		    <thead>
+		        <tr>
+		            <th id="sequence-th-source">Replace string with number sequence</th>
+		            <th id="sequence-th-start">Start from</th>
+		            <th id="sequence-th-end">End at</th>
+		        </tr>
+		    </thead>
+		    <tbody>
+				<tr>
+					<td>
+						<input type="text" name="sequence[source]" id="sequence_source'" value="<?php echo $_POST['sequence']['source']; ?>" placeholder="Source string" required>
+					</td>
+					<td>
+						<input type="number" name="sequence[start]" id="sequence_start" value="<?php echo $_POST['sequence']['start']; ?>" placeholder="start" required>
+					</td>
+					<td>
+						<input type="number" name="sequence[end]" id="sequence_end" value="<?php echo $_POST['sequence']['end']; ?>" placeholder="end" required>
+					</td>					
+					</tr>
+		    </tbody>
+		</table>
 
-?>
+		<table class="pure-table pure-table-horizontal" id="replace_strings">
+		    <thead>
+		        <tr>
+		            <th id="replace-th-replace">Replace string</th>
+		            <th id="replace-th-with">With string</th>
+		            <th id="replace-th-remove"></th>
+		        </tr>
+		    </thead>
+		    <tbody>
+		    </tbody>
+		</table>
 
-		<p class="replaceVar">
-			<label for="replace_source_<?php echo $i; ?>">Replace</label>
-			<input type="text" name="replace[<?php echo $i; ?>][source]" id="replace_source_<?php echo $i; ?>" value="<?php echo $replace['source']; ?>">
-			<label for="replace_<?php echo $i; ?>">with</label>
-			<input type="text" name="replace[<?php echo $i; ?>][replace]" id="replace_replace_<?php echo $i; ?>" value="<?php echo $replace['replace']; ?>">
-			<span class="removeVar" title="Remove this module">REMOVE</span>
-		</p>
+		<input type="submit" name="submit" id="submit" value="Generate and download ODG file" class="pure-button pure-button-active">
 
-<?php
-
-			$i++;
-		}
-	}
-}
-
-else $i=0;
-
-?>
-
-		<p>
-			<span id="addVar" class="addVar">Add replacement module</span>
-		</p>
 	</form>
+</div>
+
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 	<script>
-		var startingNo	=	0;
 		var $node		=	"";
-		varCount		=	<?php echo $i; ?>;
-		$('form').prepend($node);
+		varCount		=	0;
 		
-		$('form').on('click', '.removeVar', function(){
+		$('#replace_strings').on('click', '.removeVar', function(){
 			$(this).parent().remove();
 		});
-	
-		$('#addVar').on('click', function(){
-			//new node
+
+		$('#replace-th-remove').on('click', function(){
 			varCount++;
 			$node = '\
-				<p class="replaceVar">\
-					<label for="replace_source_'+varCount+''+varCount+'">Replace</label>\
-					<input type="text" name="replace['+varCount+'][source]" id="replace_source_'+varCount+'">\
-					<label for="replace_replace_'+varCount+''+varCount+'">with</label>\
-					<input type="text" name="replace['+varCount+'][replace]" id="replace_replace_'+varCount+'">\
-					<span class="removeVar" title="Remove this module">REMOVE</span>\
-				</p>\
+				<tr>\
+					<td>\
+						<input type="text" name="replace['+varCount+'][source]" id="replace_source_'+varCount+'" placeholder="Source string" required>\
+					</td>\
+					<td>\
+						<input type="text" name="replace['+varCount+'][replace]" id="replace_replace_'+varCount+'" placeholder="New string" required>\
+					</td>\
+					<td class="removeVar">\
+					</td>\
+				</tr>\
 			';
-			$(this).parent().before($node);
+			$('#replace_strings > tbody:first').prepend($node);
 		});
 	</script>
 
