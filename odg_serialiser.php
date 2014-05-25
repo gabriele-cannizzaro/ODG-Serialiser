@@ -1,5 +1,9 @@
 <?php 
 
+###     ODG Serialiser
+###
+###     by Gabriele Cannizzaro
+
 zip_lib_check();
 
 if ($_POST['submit']) {
