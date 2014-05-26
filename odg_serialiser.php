@@ -61,7 +61,7 @@ if ($_POST['submit']) {
 	fclose ( $fp );
 
 	###		Create the new file name
-	$newDocumentFile = $build_dir . $file_hash . '.odg';
+	$newDocumentFile = $build_dir . 'ODGS_' . $_FILES['odgfile']['name'];
 
 	###		Build the new ODT file
 	odt_repack ( $dir_path, $newDocumentFile );
