@@ -10,22 +10,30 @@
 # 3rd party:        PureCSS [http://purecss.io/]
 # ======================================================================
 
+###		SETTINGS     ###
+
+$extract_dir	= './extract/';
+$build_dir		= './rebuild/';
+
+###     END SETTINGS     ###
+
+
+
 zip_lib_check();
 
 if ($_POST['submit']) {
-
-	###		SETTINGS
-	$extract_dir	= './extract/';
-	$build_dir		= './rebuild/';
 
 	$sequence		= $_POST['sequence'];
 	$replace 		= $_POST['replace'];
 
 	###		Hash the file to generate "unique" string for the processing folder
-	$file_hash = md5_file ( $_FILES['odgfile']['tmp_name'] );
+	//$wip_dir = md5_file ( $_FILES['odgfile']['tmp_name'] );
+
+	###		Generate "unique" string for the processing folder
+	$wip_dir = uniqid();
 
 	###		Build the processing folder path
-	$dir_path = $extract_dir . $file_hash . '/';
+	$dir_path = $extract_dir . $wip_dir . '/';
 
 	###		Unzip the ODT file
 	odt_unpack ( $_FILES['odgfile']['tmp_name'], $dir_path );
@@ -33,6 +41,7 @@ if ($_POST['submit']) {
 	###		Open the 'content.xml' file and read it
 	$fp = fopen ( $dir_path . 'content.xml', 'r' );
 	$content = fread ( $fp, filesize ( $dir_path . 'content.xml' ) );
+	fclose ( $fp );
 
 	###		Split the content of the file into an array (header, page, footer)
 	$page = odg_explode ( $content, '<draw:page', '</draw:page>' );
