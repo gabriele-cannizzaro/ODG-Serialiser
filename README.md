@@ -8,7 +8,3 @@ I wrote this to be able to create a Digital Betamax tape cover in OpenOffice wit
 You can set up one incremental string replacement specifying the string to replace, the starting number and the ending one. You can also specify limitless furthers string substitutions, useful to generate multiple series of documents from a template document.
 
 ==============
-
-CHANGELOG v1.01
-
-- Changed the output filename to reflect original filename
